@@ -1,0 +1,1987 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoBuddy Pro - AI Chatbot Môi Trường & Sức Khỏe</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-green: #10B981;
+            --secondary-green: #34D399;
+            --light-green: #D1FAE5;
+            --dark-green: #059669;
+            --eco-blue: #0EA5E9;
+            --eco-yellow: #F59E0B;
+            --eco-red: #EF4444;
+            --eco-purple: #8B5CF6;
+            --bg-light: #F9FAFB;
+            --card-bg: #FFFFFF;
+            --text-dark: #1F2937;
+            --text-light: #6B7280;
+            --border-color: #E5E7EB;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --radius-md: 12px;
+            --radius-lg: 16px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: white;
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            margin-bottom: 1.5rem;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+        }
+
+        .logo-text h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .logo-text p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Weather Info */
+        .weather-info {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .weather-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+}
+
+        .weather-item i {
+            font-size: 1.2rem;
+        }
+
+        .aqi-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 1rem;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .aqi-circle {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        /* Main Layout */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 1024px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Left Panel */
+        .left-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .stats-panel {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+        }
+
+        .stats-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--dark-green);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stats-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .stat-item {
+            background: var(--light-green);
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            border-left: 4px solid var(--primary-green);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark-green);
+        }
+
+        .stat-source {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-top: 4px;
+            font-style: italic;
+        }
+
+        .progress-container {
+            margin-top: 1.5rem;
+        }
+
+        .progress-item {
+            margin-bottom: 1rem;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-size: 0.95rem;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary-green);
+            border-radius: 4px;
+            transition: width 1s ease;
+        }
+
+        /* Chat History Panel */
+        .history-panel {
+background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+            max-height: 500px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .history-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark-green);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .clear-history-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
+            color: var(--text-light);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .clear-history-btn:hover {
+            background: #FEE2E2;
+            color: var(--eco-red);
+            border-color: var(--eco-red);
+        }
+
+        .history-list {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .history-date-group {
+            margin-bottom: 0.5rem;
+        }
+
+        .history-date-header {
+            background: var(--light-green);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            color: var(--dark-green);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 0.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 5;
+        }
+
+        .history-items {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            padding-left: 0.5rem;
+        }
+
+        .history-item {
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: white;
+        }
+
+        .history-item:hover {
+            background: var(--light-green);
+            border-color: var(--primary-green);
+            transform: translateX(5px);
+        }
+
+        .history-item-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: var(--dark-green);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .history-question {
+            font-size: 0.85rem;
+            color: var(--text-dark);
+margin-bottom: 0.25rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .history-time {
+            font-size: 0.7rem;
+            color: var(--text-light);
+        }
+
+        /* Chat Container */
+        .chat-container {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            height: 750px;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chatbot-info h2 {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .chatbot-info p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #10B981;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .message {
+            display: flex;
+            flex-direction: column;
+            max-width: 100%;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .bot-message {
+            align-items: flex-start;
+        }
+
+        .user-message {
+            align-items: flex-end;
+        }
+
+        .message-content {
+            padding: 1rem 1.25rem;
+            border-radius: var(--radius-md);
+            max-width: 85%;
+            word-wrap: break-word;
+        }
+
+        .bot-content {
+            background: #F3F4F6;
+            border: 1px solid var(--border-color);
+            margin-right: auto;
+        }
+
+        .user-content {
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: white;
+            margin-left: auto;
+        }
+
+        .message-time {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            margin-top: 4px;
+            margin-left: 5px;
+        }
+
+        .user-message .message-time {
+            text-align: right;
+            margin-right: 5px;
+        }
+.quick-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .quick-action-btn {
+            padding: 0.5rem 1rem;
+            background: var(--light-green);
+            border: 1px solid var(--primary-green);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--dark-green);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .quick-action-btn:hover {
+            background: var(--primary-green);
+            color: white;
+        }
+
+        .chat-input-container {
+            padding: 1rem 1.5rem;
+            background: white;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 1rem;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .send-btn {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .send-btn:hover {
+            opacity: 0.9;
+        }
+
+        .info-card {
+            background: #EFF6FF;
+            border: 1px solid #DBEAFE;
+            border-radius: var(--radius-md);
+            padding: 1.25rem;
+            margin: 1rem 0;
+        }
+
+        .info-card-title {
+            color: var(--eco-blue);
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        .health-card {
+            background: #FEF3C7;
+            border: 1px solid #FDE68A;
+            border-radius: var(--radius-md);
+            padding: 1.25rem;
+            margin: 1rem 0;
+        }
+
+        .health-card-title {
+            color: #92400E;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .waste-guide {
+            background: #F0F9FF;
+            border: 1px solid #E0F2FE;
+            border-radius: var(--radius-md);
+            padding: 1.25rem;
+            margin: 1rem 0;
+        }
+
+        .waste-guide-title {
+color: var(--primary-green);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .waste-category {
+            margin-bottom: 1.25rem;
+            padding-bottom: 1.25rem;
+            border-bottom: 1px dashed #E5E7EB;
+        }
+
+        .waste-category:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .waste-category-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--dark-green);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .waste-examples {
+            list-style: none;
+            margin-left: 1.5rem;
+        }
+
+        .waste-examples li {
+            margin-bottom: 0.4rem;
+            position: relative;
+        }
+
+        .waste-examples li:before {
+            content: "•";
+            color: var(--primary-green);
+            font-weight: bold;
+            position: absolute;
+            left: -1rem;
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            background: #F3F4F6;
+            border-radius: var(--radius-md);
+            width: fit-content;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--text-light);
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-green);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--dark-green);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+<div class="logo-text">
+                        <h1>EcoBuddy Pro</h1>
+                        <p>AI Chatbot Môi trường & Sức khỏe</p>
+                    </div>
+                </div>
+                
+                <div class="weather-info">
+                    <div class="weather-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Việt Nam</span>
+                    </div>
+                    <div class="weather-item">
+                        <i class="fas fa-temperature-half"></i>
+                        <span id="currentTemp">--°C</span>
+                    </div>
+                    <div class="aqi-indicator" id="aqiIndicator">
+                        <div class="aqi-circle" id="aqiCircle" style="background: #10B981;"></div>
+                        <span class="aqi-text" id="aqiText">AQI: --</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-layout">
+            <div class="left-panel">
+                <div class="stats-panel">
+                    <div class="stats-title">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Thống kê của bạn</span>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-label">Điểm xanh tích lũy</div>
+                            <div class="stat-value" id="userPoints">0</div>
+                            <div class="stat-source">Dựa trên hoạt động của bạn</div>
+                        </div>
+                        
+                        <div class="stat-item">
+                            <div class="stat-label">Rác phân loại đúng</div>
+                            <div class="stat-value" id="correctClassifications">0</div>
+                            <div class="stat-source">Lần phân loại chính xác</div>
+                        </div>
+                        
+                        <div class="stat-item">
+                            <div class="stat-label">Câu hỏi đã hỏi</div>
+                            <div class="stat-value" id="questionsAsked">0</div>
+                            <div class="stat-source">Tương tác với chatbot</div>
+                        </div>
+                        
+                        <div class="stat-item">
+                            <div class="stat-label">Ngày tham gia</div>
+                            <div class="stat-value" id="daysActive">1</div>
+                            <div class="stat-source">Số ngày sử dụng</div>
+                        </div>
+                    </div>
+                    
+                    <div class="progress-container">
+<div class="progress-item">
+                            <div class="progress-header">
+                                <span>Tiến độ học tập</span>
+                                <span id="learningProgress">0%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="learningProgressBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="progress-item">
+                            <div class="progress-header">
+                                <span>Mức độ hiểu biết</span>
+                                <span id="knowledgeLevel">0%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="knowledgeLevelBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="history-panel">
+                    <div class="history-header">
+                        <div class="history-title">
+                            <i class="fas fa-history"></i>
+                            <span>Lịch sử trò chuyện</span>
+                        </div>
+                        <button class="clear-history-btn" onclick="clearChatHistory()">
+                            <i class="fas fa-trash-alt"></i> Xóa lịch sử
+                        </button>
+                    </div>
+                    <div class="history-list" id="chatHistory"></div>
+                </div>
+            </div>
+
+            <div class="chat-container">
+                <div class="chat-header">
+                    <div class="chatbot-info">
+                        <h2>Trợ lý AI EcoBuddy</h2>
+                        <p>
+                            <span class="status-dot"></span>
+                            <span>Đang trực tuyến - Hỏi gì đáp nấy</span>
+                        </p>
+                    </div>
+                    <div>
+                        <i class="fas fa-leaf"></i> Môi trường & Sức khỏe
+                    </div>
+                </div>
+                
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message bot-message">
+                        <div class="message-content bot-content">
+                            <strong>Xin chào! Tôi là EcoBuddy Pro 🌱</strong><br><br>
+                            Tôi có thể trả lời MỌI CÂU HỎI của bạn về:<br><br>
+                            
+                            <strong>🗑️ PHÂN LOẠI RÁC:</strong><br>
+• Chai nhựa, giấy, lon bỏ thùng nào?<br>
+                            • Pin, bóng đèn hỏng để đâu?<br>
+                            • Rác hữu cơ, vô cơ là gì?<br><br>
+                            
+                            <strong>🌍 CHẤT LƯỢNG KHÔNG KHÍ:</strong><br>
+                            • Hôm nay AQI bao nhiêu?<br>
+                            • Ô nhiễm ảnh hưởng thế nào?<br>
+                            • Cách bảo vệ sức khỏe?<br><br>
+                            
+                            <strong>❤️ SỨC KHỎE:</strong><br>
+                            • Bệnh hô hấp, da, mắt, tim mạch<br>
+                            • Dinh dưỡng, tập thể dục<br>
+                            • Khẩu trang nào tốt nhất?<br><br>
+                            
+                            <strong>🌿 SỐNG XANH:</strong><br>
+                            • Mẹo tiết kiệm điện, nước<br>
+                            • Cách giảm rác thải nhựa<br>
+                            • Thói quen bảo vệ môi trường<br><br>
+                            
+                            <strong>⚠️ CỨ HỎI - TÔI SẼ TRẢ LỜI CHÍNH XÁC!</strong>
+                        </div>
+                        <div class="message-time">Vừa xong</div>
+                    </div>
+                </div>
+                
+                <div class="chat-input-container">
+                    <input type="text" class="chat-input" id="userInput" 
+                           placeholder="Bạn muốn hỏi gì? Ví dụ: Chai nhựa bỏ thùng nào? Pin cũ để đâu? Hôm nay ô nhiễm không?..." 
+                           onkeypress="handleKeyPress(event)">
+                    <button class="send-btn" onclick="sendMessage()">
+                        <i class="fas fa-paper-plane"></i> Hỏi ngay
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== CẤU HÌNH ====================
+        const OPENWEATHER_API_KEY = 'bd5e378503939ddaee76f12ad7a97608';
+        const CITY_NAME = 'Hanoi';
+        
+        // ==================== DỮ LIỆU NGƯỜI DÙNG ====================
+        let userData = {
+            points: 0,
+            correctClassifications: 0,
+            questionsAsked: 0,
+            daysActive: 1,
+            learningProgress: 0,
+            knowledgeLevel: 0,
+            joinDate: new Date().toISOString()
+        };
+
+        let chatHistory = [];
+
+        // ==================== LƯU TRỮ ====================
+        function saveUserData() {
+            localStorage.setItem('ecoBuddyUserData', JSON.stringify(userData));
+            updateStatsDisplay();
+        }
+
+        function loadUserData() {
+            const savedData = localStorage.getItem('ecoBuddyUserData');
+            if (savedData) {
+userData = JSON.parse(savedData);
+            } else {
+                saveUserData();
+            }
+            
+            if (userData.joinDate) {
+                const joinDate = new Date(userData.joinDate);
+                const today = new Date();
+                const diffTime = Math.abs(today - joinDate);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                userData.daysActive = diffDays;
+            }
+            
+            updateStatsDisplay();
+        }
+
+        function saveChatHistory() {
+            localStorage.setItem('ecoBuddyChatHistory', JSON.stringify(chatHistory));
+            displayChatHistory();
+        }
+
+        function loadChatHistory() {
+            const savedHistory = localStorage.getItem('ecoBuddyChatHistory');
+            if (savedHistory) {
+                chatHistory = JSON.parse(savedHistory);
+                displayChatHistory();
+            }
+        }
+
+        function updateStatsDisplay() {
+            document.getElementById('userPoints').textContent = userData.points;
+            document.getElementById('correctClassifications').textContent = userData.correctClassifications;
+            document.getElementById('questionsAsked').textContent = userData.questionsAsked;
+            document.getElementById('daysActive').textContent = userData.daysActive;
+            document.getElementById('learningProgress').textContent = Math.round(userData.learningProgress) + '%';
+            document.getElementById('knowledgeLevel').textContent = Math.round(userData.knowledgeLevel) + '%';
+            
+            document.getElementById('learningProgressBar').style.width = userData.learningProgress + '%';
+            document.getElementById('knowledgeLevelBar').style.width = userData.knowledgeLevel + '%';
+        }
+
+        // ==================== LỊCH SỬ TRÒ CHUYỆN ====================
+        function addToChatHistory(question, answer) {
+            const now = new Date();
+            const timeString = now.getHours().toString().padStart(2, '0') + ':' + 
+                             now.getMinutes().toString().padStart(2, '0');
+            const dateString = now.toLocaleDateString('vi-VN');
+            
+            let title = '';
+            const msg = question.toLowerCase();
+            
+            if (msg.includes('chai nhựa') || msg.includes('chai') && msg.includes('nhựa')) title = '🥤 Phân loại chai nhựa';
+            else if (msg.includes('pin') || msg.includes('ắc quy')) title = '🔋 Phân loại pin, ắc quy';
+            else if (msg.includes('giấy') || msg.includes('báo') || msg.includes('sách')) title = '📄 Phân loại giấy, sách báo';
+else if (msg.includes('lon') || msg.includes('kim loại')) title = '🥫 Phân loại lon, kim loại';
+            else if (msg.includes('thủy tinh') || msg.includes('chai thủy tinh')) title = '🥃 Phân loại thủy tinh';
+            else if (msg.includes('túi nilon') || msg.includes('ống hút')) title = '🛍️ Phân loại túi nilon, ống hút';
+            else if (msg.includes('bóng đèn')) title = '💡 Phân loại bóng đèn hỏng';
+            else if (msg.includes('điện tử') || msg.includes('điện thoại') || msg.includes('máy tính')) title = '📱 Phân loại rác điện tử';
+            else if (msg.includes('thức ăn') || msg.includes('vỏ trái cây')) title = '🍎 Phân loại rác hữu cơ';
+            else if (msg.includes('không khí') || msg.includes('ô nhiễm')) title = '🌍 Chất lượng không khí';
+            else if (msg.includes('hô hấp') || msg.includes('phổi') || msg.includes('ho')) title = '🫁 Sức khỏe hô hấp';
+            else if (msg.includes('da') || msg.includes('dị ứng')) title = '🧴 Sức khỏe làn da';
+            else if (msg.includes('mắt') || msg.includes('đỏ mắt')) title = '👁️ Sức khỏe mắt';
+            else if (msg.includes('tim') || msg.includes('huyết áp')) title = '❤️ Sức khỏe tim mạch';
+            else if (msg.includes('khẩu trang')) title = '😷 Hướng dẫn chọn khẩu trang';
+            else if (msg.includes('dinh dưỡng') || msg.includes('ăn uống')) title = '🥗 Dinh dưỡng & đề kháng';
+            else if (msg.includes('tập thể dục') || msg.includes('vận động')) title = '🏃 Vận động & tập luyện';
+            else if (msg.includes('tiết kiệm điện')) title = '⚡ Mẹo tiết kiệm điện';
+            else if (msg.includes('tiết kiệm nước')) title = '💧 Mẹo tiết kiệm nước';
+            else if (msg.includes('cây lọc không khí')) title = '🌿 Cây lọc không khí';
+            else if (msg.includes('sống xanh')) title = '🌱 Mẹo sống xanh';
+            else title = '💬 Tư vấn: ' + question.substring(0, 30) + '...';
+            
+            chatHistory.unshift({
+                id: Date.now(),
+                question: question,
+                answer: answer.replace(/<[^>]*>/g, '').substring(0, 100) + (answer.length > 100 ? '...' : ''),
+                fullAnswer: answer,
+                time: timeString,
+                date: dateString,
+                timestamp: now.getTime(),
+                title: title
+            });
+            
+            if (chatHistory.length > 50) {
+                chatHistory = chatHistory.slice(0, 50);
+            }
+            
+            saveChatHistory();
+        }
+
+        function displayChatHistory() {
+            const historyContainer = document.getElementById('chatHistory');
+            
+            if (chatHistory.length === 0) {
+historyContainer.innerHTML = '<p style="text-align: center; color: var(--text-light); padding: 2rem;">Chưa có lịch sử trò chuyện</p>';
+                return;
+            }
+            
+            const groupedByDate = {};
+            chatHistory.forEach(item => {
+                if (!groupedByDate[item.date]) {
+                    groupedByDate[item.date] = [];
+                }
+                groupedByDate[item.date].push(item);
+            });
+            
+            const sortedDates = Object.keys(groupedByDate).sort((a, b) => {
+                const [d1, m1, y1] = a.split('/');
+                const [d2, m2, y2] = b.split('/');
+                return new Date(y2, m2-1, d2) - new Date(y1, m1-1, d1);
+            });
+            
+            let html = '';
+            
+            sortedDates.forEach(date => {
+                const dayItems = groupedByDate[date].sort((a, b) => b.timestamp - a.timestamp);
+                
+                html += `
+                    <div class="history-date-group">
+                        <div class="history-date-header">
+                            <i class="fas fa-calendar-alt"></i>
+                            ${date}
+                        </div>
+                        <div class="history-items">
+                `;
+                
+                dayItems.forEach(item => {
+                    html += `
+                        <div class="history-item" onclick="loadHistoryItem(${item.id})">
+                            <div class="history-item-title">
+                                <i class="fas fa-comment"></i>
+                                ${item.title}
+                            </div>
+                            <div class="history-question">❓ ${escapeHtml(item.question.substring(0, 60))}${item.question.length > 60 ? '...' : ''}</div>
+                            <div class="history-time">🕒 ${item.time}</div>
+                        </div>
+                    `;
+                });
+                
+                html += `
+                        </div>
+                    </div>
+                `;
+            });
+            
+            historyContainer.innerHTML = html;
+        }
+
+        function loadHistoryItem(id) {
+            const historyItem = chatHistory.find(item => item.id === id);
+            if (historyItem) {
+                addUserMessage(historyItem.question);
+                addBotMessage(historyItem.fullAnswer, true);
+                setTimeout(() => scrollToBottom(), 100);
+            }
+        }
+
+        function clearChatHistory() {
+            if (confirm('Bạn có chắc muốn xóa toàn bộ lịch sử trò chuyện?')) {
+                chatHistory = [];
+                saveChatHistory();
+                displayChatHistory();
+            }
+}
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // ==================== THỜI TIẾT ====================
+        async function fetchCurrentWeather() {
+            try {
+                const url = `https://api.openweathermap.org/data/2.5/weather?q=${CITY_NAME}&units=metric&lang=vi&appid=${OPENWEATHER_API_KEY}`;
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Không thể lấy dữ liệu thời tiết');
+                
+                const data = await response.json();
+                document.getElementById('currentTemp').textContent = Math.round(data.main.temp) + '°C';
+                await fetchAirQuality(data.coord.lat, data.coord.lon);
+                
+            } catch (error) {
+                console.error('Lỗi khi lấy thời tiết:', error);
+                document.getElementById('currentTemp').textContent = '28°C';
+                updateAQIDisplay(2);
+            }
+        }
+
+        async function fetchAirQuality(lat, lon) {
+            try {
+                const url = `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${OPENWEATHER_API_KEY}`;
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Không thể lấy dữ liệu AQI');
+                
+                const data = await response.json();
+                const aqi = data.list[0].main.aqi;
+                updateAQIDisplay(aqi);
+                
+            } catch (error) {
+                console.error('Lỗi khi lấy AQI:', error);
+                updateAQIDisplay(2);
+            }
+        }
+
+        function updateAQIDisplay(aqi) {
+            const aqiCircle = document.getElementById('aqiCircle');
+            const aqiText = document.getElementById('aqiText');
+            
+            let aqiLevel = '';
+            let color = '';
+            
+            switch(aqi) {
+                case 1: aqiLevel = 'Tốt'; color = '#10B981'; break;
+                case 2: aqiLevel = 'Trung bình'; color = '#F59E0B'; break;
+                case 3: aqiLevel = 'Kém'; color = '#EF4444'; break;
+                case 4: aqiLevel = 'Xấu'; color = '#8B5CF6'; break;
+                case 5: aqiLevel = 'Nguy hiểm'; color = '#6B21A8'; break;
+                default: aqiLevel = 'Trung bình'; color = '#F59E0B';
+            }
+            
+            aqiCircle.style.background = color;
+            aqiText.innerHTML = `AQI: ${aqiLevel}`;
+        }
+
+        // ==================== CHATBOT - HỎI GÌ ĐÁP NẤY ====================
+        
+        document.addEventListener('DOMContentLoaded', function() {
+loadUserData();
+            loadChatHistory();
+            fetchCurrentWeather();
+            setInterval(fetchCurrentWeather, 1800000);
+        });
+
+        function addUserMessage(message) {
+            const chatMessages = document.getElementById('chatMessages');
+            const now = new Date();
+            const timeString = now.getHours().toString().padStart(2, '0') + ':' + 
+                             now.getMinutes().toString().padStart(2, '0');
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message user-message';
+            messageDiv.innerHTML = `
+                <div class="message-content user-content">
+                    ${escapeHtml(message)}
+                </div>
+                <div class="message-time">${timeString}</div>
+            `;
+            
+            chatMessages.appendChild(messageDiv);
+            scrollToBottom();
+            
+            userData.questionsAsked++;
+            userData.points += 5;
+            userData.learningProgress = Math.min(100, userData.learningProgress + 1);
+            userData.knowledgeLevel = Math.min(100, userData.knowledgeLevel + 0.5);
+            saveUserData();
+        }
+
+        function addBotMessage(content, isHTML = false) {
+            const chatMessages = document.getElementById('chatMessages');
+            const now = new Date();
+            const timeString = now.getHours().toString().padStart(2, '0') + ':' + 
+                             now.getMinutes().toString().padStart(2, '0');
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message bot-message';
+            
+            let contentHTML = '';
+            if (isHTML) {
+                contentHTML = `<div class="message-content bot-content">${content}</div>`;
+            } else {
+                contentHTML = `<div class="message-content bot-content">${escapeHtml(content)}</div>`;
+            }
+            
+            messageDiv.innerHTML = contentHTML + `<div class="message-time">${timeString}</div>`;
+            
+            chatMessages.appendChild(messageDiv);
+            scrollToBottom();
+        }
+
+        function showTypingIndicator() {
+            const chatMessages = document.getElementById('chatMessages');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message bot-message';
+            typingDiv.id = 'typingIndicator';
+            typingDiv.innerHTML = `
+                <div class="typing-indicator">
+                    <div class="typing-dots">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+<div class="typing-dot"></div>
+                    </div>
+                    EcoBuddy đang trả lời...
+                </div>
+            `;
+            chatMessages.appendChild(typingDiv);
+            scrollToBottom();
+        }
+
+        function removeTypingIndicator() {
+            const typingIndicator = document.getElementById('typingIndicator');
+            if (typingIndicator) typingIndicator.remove();
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const message = input.value.trim();
+            if (!message) return;
+            
+            addUserMessage(message);
+            input.value = '';
+            
+            showTypingIndicator();
+            
+            setTimeout(() => {
+                removeTypingIndicator();
+                const response = getAnswer(message);
+                addBotMessage(response, true);
+                addToChatHistory(message, response);
+                
+                if (message.toLowerCase().includes('rác') || 
+                    message.toLowerCase().includes('phân loại') ||
+                    message.toLowerCase().includes('thùng') ||
+                    message.toLowerCase().includes('chai') ||
+                    message.toLowerCase().includes('pin')) {
+                    userData.correctClassifications++;
+                    userData.points += 10;
+                    saveUserData();
+                }
+            }, 1000);
+        }
+
+        // ==================== HỆ THỐNG TRẢ LỜI CHÍNH XÁC ====================
+        function getAnswer(question) {
+            const msg = question.toLowerCase().trim();
+            
+            // ========== 1. PHÂN LOẠI CHAI NHỰA ==========
+            if (msg.includes('chai nhựa') || (msg.includes('chai') && msg.includes('nhựa')) || msg.includes('chai nước')) {
+                return `
+                    <strong>🥤 HƯỚNG DẪN PHÂN LOẠI CHAI NHỰA</strong>
+                    <br><br>
+                    <div class="waste-guide">
+                        <p><strong>✅ CHAI NHỰA TÁI CHẾ ĐƯỢC:</strong></p>
+                        <ul class="waste-examples">
+                            <li>Chai nước suối, nước ngọt (nhựa PET số 1)</li>
+                            <li>Chai sữa, dầu gội, nước rửa chén (nhựa HDPE số 2)</li>
+                            <li>Hũ đựng thực phẩm, chai đựng sữa chua (nhựa PP số 5)</li>
+                        </ul>
+                        <p><strong>📌 CÁCH XỬ LÝ ĐÚNG:</strong></p>
+                        <ul class="waste-examples">
+                            <li>Bước 1: Đổ hết nước/nội dung bên trong</li>
+                            <li>Bước 2: Rửa sạch bằng nước</li>
+<li>Bước 3: Bỏ nắp nhựa (nắp bỏ riêng)</li>
+                            <li>Bước 4: Bóp bẹp chai để tiết kiệm diện tích</li>
+                            <li>Bước 5: Bỏ vào thùng <strong style="color: #10B981;">RÁC TÁI CHẾ (màu xanh)</strong></li>
+                        </ul>
+                        <p><strong>❌ CHAI NHỰA KHÔNG TÁI CHẾ ĐƯỢC:</strong></p>
+                        <ul class="waste-examples">
+                            <li>Chai đựng dầu nhớt, hóa chất</li>
+                            <li>Chai thuốc trừ sâu</li>
+                            <li>Ống hút nhựa, thìa dĩa nhựa dùng một lần</li>
+                            <li>→ Bỏ vào thùng <strong style="color: #EF4444;">RÁC VÔ CƠ (màu đỏ)</strong></li>
+                        </ul>
+                        <p><em>💡 Mỗi chai nhựa tái chế đúng cách giúp tiết kiệm năng lượng đủ để thắp sáng bóng đèn 60W trong 6 giờ!</em></p>
+                    </div>
+                    <div class="quick-actions">
+                        <button class="quick-action-btn" onclick="quickAction('pin')">Hỏi về pin</button>
+                        <button class="quick-action-btn" onclick="quickAction('giay')">Hỏi về giấy</button>
+                        <button class="quick-action-btn" onclick="quickAction('lon')">Hỏi về lon</button>
+                    </div>
+                `;
+            }
+            
+            // ========== 2. PHÂN LOẠI PIN, ẮC QUY ==========
+            else if (msg.includes('pin') || msg.includes('ắc quy') || msg.includes('pin cũ')) {
+                return `
+                    <strong>🔋 HƯỚNG DẪN PHÂN LOẠI PIN, ẮC QUY</strong>
+                    <br><br>
+                    <div class="waste-guide">
+                        <p><strong>⚠️ PIN, ẮC QUY LÀ RÁC NGUY HẠI!</strong></p>
+                        <p>Pin và ắc quy chứa nhiều kim loại nặng như chì, thủy ngân, cadimi - cực kỳ độc hại với môi trường và sức khỏe nếu không được xử lý đúng cách.</p>
+                        <br>
+                        <p><strong>📌 CÁCH XỬ LÝ ĐÚNG:</strong></p>
+                        <ul class="waste-examples">
+                            <li><strong>KHÔNG</strong> bỏ chung với rác sinh hoạt thông thường</li>
+                            <li><strong>KHÔNG</strong> đốt pin</li>
+                            <li><strong>KHÔNG</strong> để pin ướt hoặc ngâm nước</li>
+                            <li>Dán băng keo vào 2 đầu cực của pin để tránn chập cháy</li>
+                            <li>Bỏ vào thùng <strong style="color: #8B5CF6;">RÁC NGUY HẠI (thùng màu vàng)</strong></li>
+                            <li>Nếu trường không có thùng rác nguy hại, hãy gom lại và đưa cho nhân viên vệ sinh, bảo vệ hoặc thầy cô để xử lý riêng</li>
+</ul>
+                        <br>
+                        <p><strong>🏪 NƠI TIẾP NHẬN PIN CŨ:</strong></p>
+                        <ul class="waste-examples">
+                            <li>Hệ thống siêu thị: VinMart, Co.op Mart, Lotte Mart</li>
+                            <li>Cửa hàng điện máy: Điện Máy Xanh, Nguyễn Kim</li>
+                            <li>Một số trường học có chương trình thu gom pin</li>
+                        </ul>
+                        <p><em>💡 Một viên pin nhỏ có thể làm ô nhiễm 500 lít nước và 1m³ đất trong 50 năm!</em></p>
+                    </div>
+                    <div class="quick-actions">
+                        <button class="quick-action-btn" onclick="quickAction('bong-den')">Hỏi về bóng đèn</button>
+                        <button class="quick-action-btn" onclick="quickAction('dien-tu')">Hỏi về rác điện tử</button>
+                    </div>
+                `;
+            }
+            
+            // ========== 3. PHÂN LOẠI GIẤY, SÁCH BÁO ==========
+            else if (msg.includes('giấy') || msg.includes('báo') || msg.includes('sách') || msg.includes('vở') || msg.includes('carton') || msg.includes('thùng giấy')) {
+                return `
+                    <strong>📄 HƯỚNG DẪN PHÂN LOẠI GIẤY, SÁCH BÁO</strong>
+                    <br><br>
+                    <div class="waste-guide">
+                        <p><strong>✅ GIẤY TÁI CHẾ ĐƯỢC:</strong></p>
+                        <ul class="waste-examples">
+                            <li>Giấy in, giấy viết, vở đã qua sử dụng</li>
+                            <li>Báo, tạp chí, sách cũ</li>
+                            <li>Thùng carton, hộp giấy</li>
+                            <li>Bìa thư, phong bì</li>
+                        </ul>
+                        <p><strong>📌 CÁCH XỬ LÝ ĐÚNG:</strong></p>
+                        <ul class="waste-examples">
+                            <li>Bước 1: Loại bỏ ghim, băng keo, bìa nilon</li>
+                            <li>Bước 2: Xếp gọn hoặc cột thành chồng</li>
+                            <li>Bước 3: Để khô ráo, không làm ướt</li>
+                            <li>Bước 4: Bỏ vào thùng <strong style="color: #10B981;">RÁC TÁI CHẾ (màu xanh)</strong></li>
+                        </ul>
+                        <p><strong>❌ GIẤY KHÔNG TÁI CHẾ ĐƯỢC:</strong></p>
+                        <ul class="waste-examples">
+                            <li>Giấy vệ sinh, khăn giấy đã dùng</li>
+                            <li>Giấy dính dầu mỡ, thức ăn</li>
+                            <li>Hộp sữa, hộp giấy tráng nhựa</li>
+                            <li>Giấy bạc, giấy nilon</li>
+<li>→ Bỏ vào thùng <strong style="color: #EF4444;">RÁC VÔ CƠ (màu đỏ)</strong></li>
+                        </ul>
+                        <p><em>💡 Tái chế 1 tấn giấy giúp cứu 17 cây xanh, tiết kiệm 30.000 lít nước và 4.000 kWh điện!</em></p>
+                    </div>
+                    <div class="quick-actions">
+                        <button class="quick-action-btn" onclick="quickAction('chai-nhua')">Hỏi về chai nhựa</button>
+                        <button class="quick-action-btn" onclick="quickAction('lon')">Hỏi về lon</button>
+                    </div>
+                `;
+            }
+            
+            // ========== 4. PHÂN LOẠI LON, KIM LOẠI ==========
+            else if (msg.includes('lon') || msg.includes('vỏ lon') || msg.includes('kim loại') || msg.includes('nhôm') || msg.includes('sắt') || msg.includes('đồ hộp')) {
+                return `
+                    <strong>🥫 HƯỚNG DẪN PHÂN LOẠI LON, KIM LOẠI</strong>
+                    <br><br>
+                    <div class="waste-guide">
+                        <p><strong>✅ LON, KIM LOẠI TÁI CHẾ ĐƯỢC:</strong></p>
+                        <ul class="waste-examples">
+                            <li>Lon bia, nước ngọt (nhôm)</li>
+                            <li>Đồ hộp (sắt, thép)</li>
+                            <li>Nắp chai kim loại</li>
+                            <li>Dây điện (bỏ vỏ nhựa)</li>
+                            <li>Vật dụng kim loại hỏng</li>
+                        </ul>
+                        <p><strong>📌 CÁCH XỬ LÝ ĐÚNG:</strong></p>
+                        <ul class="waste-examples">
+                            <li>Bước 1: Rửa sạch, không còn thức ăn</li>
+                            <li>Bước 2: Làm khô</li>
+                            <li>Bước 3: Bóp dẹp lon để tiết kiệm diện tích</li>
+                            <li>Bước 4: Bỏ vào thùng <strong style="color: #10B981;">RÁC TÁI CHẾ (màu xanh)</strong></li>
+                        </ul>
+                        <p><em>💡 Tái chế 1 lon nhôm tiết kiệm đủ năng lượng để chạy TV trong 3 giờ!</em></p>
+                    </div>
+                `;
+            }
+            
+            // ========== 5. PHÂN LOẠI THỦY TINH ==========
+            else if (msg.includes('thủy tinh') || msg.includes('chai thủy tinh') || msg.includes('lọ thủy tinh') || msg.includes('ly') || msg.includes('cốc')) {
+                return `
+                    <strong>🥃 HƯỚNG DẪN PHÂN LOẠI THỦY TINH</strong>
+                    <br><br>
+                    <div class="waste-guide">
+                        <p><strong>✅ THỦY TINH TÁI CHẾ ĐƯỢC:</strong></p>
+                        <ul class="waste-examples">
+<li>Chai bia, chai rượu, chai nước ngọt thủy tinh</li>
+                            <li>Lọ đựng thực phẩm (dưa muối, ớt, tương ớt)</li>
+                            <li>Hủ thủy tinh</li>
+                        </ul>
+                        <p><strong>⚠️ LƯU Ý QUAN TRỌNG:</strong></p>
+                        <ul class="waste-examples">
+                            <li><strong style="color: #EF4444;">KHÔNG</strong> bỏ thủy tinh vỡ trực tiếp vào thùng rác - nguy hiểm cho công nhân vệ sinh</li>
+                            <li>Bọc kín mảnh vỡ trong giấy hoặc cho vào hộp cứng</li>
+                            <li>Dán nhãn "CẨN THẬN - THỦY TINH VỠ"</li>
+                        </ul>
+                        <p><strong>📌 CÁCH XỬ LÝ ĐÚNG:</strong></p>
+                        <ul class="waste-examples">
+                            <li>Rửa sạch, bỏ nắp</li>
+                            <li>Bỏ vào thùng <strong style="color: #10B981;">RÁC TÁI CHẾ (màu xanh)</strong></li>
+                            <li>Nếu thủy tinh vỡ: bọc kín → thùng <strong style="color: #EF4444;">RÁC VÔ CƠ</strong></li>
+                        </ul>
+                    </div>
+                `;
+            }
+            
+            // ========== 6. PHÂN LOẠI TÚI NILON, ỐNG HÚT ==========
+            else if (msg.includes('túi nilon') || msg.includes('túi nhựa') || msg.includes('ống hút') || msg.includes('ly nhựa')) {
+                return `
+                    <strong>🛍️ HƯỚNG DẪN PHÂN LOẠI TÚI NILON, ỐNG HÚT</strong>
+                    <br><br>
+                    <div class="waste-guide">
+                        <p><strong>❌ TÚI NILON, ỐNG HÚT:</strong></p>
+                        <ul class="waste-examples">
+                            <li>Là rác thải nhựa KHÔNG tái chế được</li>
+                            <li>Phải mất 500-1000 năm để phân hủy</li>
+                            <li>Gây ô nhiễm đất, nước, tắc cống rãnh</li>
+                            <li>Làm chết động vật biển nếu trôi ra đại dương</li>
+                        </ul>
+                        <p><strong>📌 CÁCH XỬ LÝ ĐÚNG:</strong></p>
+                        <ul class="waste-examples">
+                            <li>Bỏ vào thùng <strong style="color: #EF4444;">RÁC VÔ CƠ (màu đỏ)</strong></li>
+                            <li>Túi nilon sạch có thể tái sử dụng</li>
+                            <li><strong>GIẢI PHÁP THAY THẾ:</strong> Mang túi vải, làn nhựa đi chợ; dùng ống hút inox, giấy</li>
+                        </ul>
+                        <p><em>💡 Mỗi năm Việt Nam thải ra 1,8 triệu tấn rác nhựa, chỉ 27% được tái chế!</em></p>
+                    </div>
+                `;
+            }
+// ========== 7. PHÂN LOẠI BÓNG ĐÈN HỎNG ==========
+            else if (msg.includes('bóng đèn') || msg.includes('đèn huỳnh quang') || msg.includes('đèn compact') || msg.includes('đèn led')) {
+                return `
+                    <strong>💡 HƯỚNG DẪN PHÂN LOẠI BÓNG ĐÈN HỎNG</strong>
+                    <br><br>
+                    <div class="waste-guide">
+                        <p><strong>⚠️ BÓNG ĐÈN HUỲNH QUANG, COMPACT:</strong></p>
+                        <ul class="waste-examples">
+                            <li>Chứa thủy ngân - cực kỳ độc hại</li>
+                            <li>Là RÁC NGUY HẠI, không bỏ chung rác thường</li>
+                        </ul>
+                        <p><strong>📌 CÁCH XỬ LÝ ĐÚNG:</strong></p>
+                        <ul class="waste-examples">
+                            <li>Bọc kín trong giấy báo hoặc hộp cứng</li>
+                            <li>Dán nhãn "BÓNG ĐÈN HỎNG - CẨN THẬN"</li>
+                            <li>Bỏ vào thùng <strong style="color: #8B5CF6;">RÁC NGUY HẠI (màu vàng)</strong></li>
+                            <li>Trả lại cho cửa hàng điện máy có chương trình thu hồi</li>
+                        </ul>
+                        <p><strong>✅ BÓNG ĐÈN LED:</strong> Có thể bỏ vào thùng RÁC VÔ CƠ (màu đỏ)</p>
+                    </div>
+                `;
+            }
+            
+            // ========== 8. PHÂN LOẠI RÁC ĐIỆN TỬ ==========
+            else if (msg.includes('điện tử') || msg.includes('điện thoại') || msg.includes('máy tính') || msg.includes('sạc') || msg.includes('tai nghe') || msg.includes('remote')) {
+                return `
+                    <strong>📱 HƯỚNG DẪN PHÂN LOẠI RÁC ĐIỆN TỬ</strong>
+                    <br><br>
+                    <div class="waste-guide">
+                        <p><strong>⚠️ RÁC ĐIỆN TỬ (E-WASTE):</strong></p>
+                        <ul class="waste-examples">
+                            <li>Điện thoại, máy tính bảng</li>
+                            <li>Laptop, máy tính bàn</li>
+                            <li>Sạc, dây cáp, tai nghe</li>
+                            <li>Remote, đồ chơi điện tử</li>
+                            <li>Ổ cứng, USB, linh kiện máy tính</li>
+                        </ul>
+                        <p><strong>⚠️ NGUY HẠI:</strong> Chứa chì, thủy ngân, cadimi - không phân hủy, gây ô nhiễm nguồn nước</p>
+                        <p><strong>📌 CÁCH XỬ LÝ ĐÚNG:</strong></p>
+                        <ul class="waste-examples">
+                            <li>KHÔNG bỏ chung rác sinh hoạt</li>
+                            <li>Bỏ vào thùng <strong style="color: #8B5CF6;">RÁC NGUY HẠI (màu vàng)</strong></li>
+<li>Liên hệ các cửa hàng điện máy có thu đổi cũ</li>
+                            <li>Xóa sạch dữ liệu cá nhân trước khi vứt bỏ</li>
+                        </ul>
+                    </div>
+                `;
+            }
+            
+            // ========== 9. PHÂN LOẠI RÁC HỮU CƠ ==========
+            else if (msg.includes('thức ăn') || msg.includes('vỏ trái cây') || msg.includes('rau củ') || msg.includes('lá cây') || msg.includes('hữu cơ')) {
+                return `
+                    <strong>🍎 HƯỚNG DẪN PHÂN LOẠI RÁC HỮU CƠ</strong>
+                    <br><br>
+                    <div class="waste-guide">
+                        <p><strong>✅ RÁC HỮU CƠ BAO GỒM:</strong></p>
+                        <ul class="waste-examples">
+                            <li>Thức ăn thừa, cơm thừa</li>
+                            <li>Vỏ trái cây, rau củ</li>
+                            <li>Lá cây, hoa héo, cỏ khô</li>
+                            <li>Bã chè, bã cà phê</li>
+                            <li>Vỏ trứng, xác động vật nhỏ</li>
+                        </ul>
+                        <p><strong>📌 CÁCH XỬ LÝ ĐÚNG:</strong></p>
+                        <ul class="waste-examples">
+                            <li>Bỏ vào thùng <strong style="color: #F59E0B;">RÁC HỮU CƠ (thùng màu nâu)</strong></li>
+                            <li>Có thể ủ làm phân compost cho cây</li>
+                            <li>Để ráo nước trước khi bỏ</li>
+                        </ul>
+                        <p><em>💡 Ủ 1kg rác hữu cơ thành phân compost giúp giảm 1kg khí nhà kính CO2!</em></p>
+                    </div>
+                `;
+            }
+            
+            // ========== 10. CHẤT LƯỢNG KHÔNG KHÍ ==========
+            else if (msg.includes('không khí') || msg.includes('ô nhiễm') || msg.includes('bụi') || msg.includes('aqi') || msg.includes('chỉ số không khí')) {
+                const aqiText = document.getElementById('aqiText').innerHTML;
+                const temp = document.getElementById('currentTemp').textContent;
+                
+                return `
+                    <strong>🌍 CHẤT LƯỢNG KHÔNG KHÍ VIỆT NAM HÔM NAY</strong>
+                    <br><br>
+                    <div class="info-card">
+                        <p><strong>📊 THÔNG TIN HIỆN TẠI:</strong></p>
+                        <ul class="waste-examples">
+                            <li>🌡️ Nhiệt độ: ${temp}</li>
+                            <li>💨 Chất lượng không khí: ${aqiText}</li>
+                            <li>📍 Khu vực: Hà Nội (đại diện)</li>
+                            <li>🕒 Cập nhật: ${new Date().getHours()}:${new Date().getMinutes().toString().padStart(2, '0')}</li>
+                        </ul>
+</div>
+                    
+                    <div class="health-card">
+                        <p><strong>🛡️ KHUYẾN NGHỊ SỨC KHỎE:</strong></p>
+                        ${aqiText.includes('Tốt') ? `
+                            <ul class="waste-examples">
+                                <li>✅ Chất lượng không khí tốt</li>
+                                <li>✅ An toàn cho mọi hoạt động ngoài trời</li>
+                                <li>✅ Có thể mở cửa sổ thông gió</li>
+                            </ul>
+                        ` : aqiText.includes('Trung bình') ? `
+                            <ul class="waste-examples">
+                                <li>⚠️ Chất lượng không khí trung bình</li>
+                                <li>⚠️ Nhóm nhạy cảm nên hạn chế hoạt động ngoài trời</li>
+                                <li>✅ Vẫn có thể tập thể dục nhưng không quá gắng sức</li>
+                                <li>✅ Nên đeo khẩu trang khi ra đường</li>
+                            </ul>
+                        ` : aqiText.includes('Kém') || aqiText.includes('Xấu') ? `
+                            <ul class="waste-examples">
+                                <li>❌ Chất lượng không khí kém</li>
+                                <li>❌ Hạn chế ra ngoài nếu không cần thiết</li>
+                                <li>❌ Đeo khẩu trang N95/KN95 khi ra đường</li>
+                                <li>❌ Không nên tập thể dục ngoài trời</li>
+                                <li>❌ Đóng kín cửa sổ, sử dụng máy lọc không khí</li>
+                            </ul>
+                        ` : `
+                            <ul class="waste-examples">
+                                <li>🟡 Chất lượng không khí trung bình</li>
+                                <li>🟡 Nên đeo khẩu trang khi ra đường</li>
+                            </ul>
+                        `}
+                    </div>
+                    
+                    <div class="quick-actions">
+                        <button class="quick-action-btn" onclick="quickAction('khau-trang')">Chọn khẩu trang</button>
+                        <button class="quick-action-btn" onclick="quickAction('ho-hap')">Bệnh hô hấp</button>
+                        <button class="quick-action-btn" onclick="quickAction('cay-loc-kk')">Cây lọc không khí</button>
+                    </div>
+                `;
+            }
+            
+            // ========== 11. SỨC KHỎE HÔ HẤP ==========
+            else if (msg.includes('hô hấp') || msg.includes('phổi') || msg.includes('ho') || msg.includes('hen suyễn') || msg.includes('viêm phế quản')) {
+                return `
+                    <strong>🫁 BỆNH HÔ HẤP DO Ô NHIỄM KHÔNG KHÍ</strong>
+                    <br><br>
+<div class="health-card">
+                        <p><strong>⚠️ CÁC BỆNH THƯỜNG GẶP:</strong></p>
+                        <ul class="waste-examples">
+                            <li><strong>Viêm mũi dị ứng:</strong> Hắt hơi, sổ mũi, ngạt mũi, ngứa mũi</li>
+                            <li><strong>Viêm họng:</strong> Đau rát họng, ho khan, khàn tiếng</li>
+                            <li><strong>Hen suyễn:</strong> Khó thở, thở khò khè, tức ngực</li>
+                            <li><strong>Viêm phế quản:</strong> Ho có đờm, sốt nhẹ, mệt mỏi</li>
+                            <li><strong>Viêm phổi:</strong> Sốt cao, khó thở, đau ngực, ho ra đờm đặc</li>
+                        </ul>
+                        
+                        <p><strong>🛡️ CÁCH PHÒNG TRÁNH:</strong></p>
+                        <ul class="waste-examples">
+                            <li>Đeo khẩu trang N95/KN95 khi chỉ số AQI > 100</li>
+                            <li>Rửa mũi bằng nước muối sinh lý mỗi ngày</li>
+                            <li>Uống đủ nước, uống nước ấm</li>
+                            <li>Giữ ấm cổ khi thời tiết lạnh</li>
+                            <li>Bổ sung vitamin C từ cam, bưởi, ổi</li>
+                            <li>Tránh tập thể dục ngoài trời khi ô nhiễm cao</li>
+                            <li>Sử dụng máy lọc không khí trong phòng ngủ</li>
+                        </ul>
+                        
+                        <p><strong>🚨 KHI NÀO CẦN ĐI KHÁM?</strong></p>
+                        <ul class="waste-examples">
+                            <li>Khó thở, đau tức ngực</li>
+                            <li>Sốt cao kéo dài trên 3 ngày</li>
+                            <li>Ho ra máu</li>
+                            <li>Thở khò khè, co rút lồng ngực</li>
+                            <li>Các triệu chứng không thuyên giảm sau 5-7 ngày</li>
+                        </ul>
+                    </div>
+                `;
+            }
+            
+            // ========== 12. SỨC KHỎE LÀN DA ==========
+            else if (msg.includes('da') || msg.includes('dị ứng') || msg.includes('ngứa') || msg.includes('mẩn đỏ') || msg.includes('nổi mề đay')) {
+                return `
+                    <strong>🧴 ẢNH HƯỞNG CỦA Ô NHIỄM ĐẾN LÀN DA</strong>
+                    <br><br>
+                    <div class="health-card">
+                        <p><strong>⚠️ TÁC HẠI CỦA BỤI MỊN VÀ HÓA CHẤT:</strong></p>
+                        <ul class="waste-examples">
+                            <li>Bụi mịn PM2.5 bám trên da gây bít tắc lỗ chân lông</li>
+                            <li>Các hợp chất hữu cơ dễ bay hơi gây kích ứng</li>
+<li>Khí NO2, SO2 làm suy yếu hàng rào bảo vệ da</li>
+                            <li>Tăng tốc độ lão hóa, hình thành nếp nhăn, đốm nâu</li>
+                            <li>Gây nám, tàn nhang, sạm da</li>
+                            <li>Làm nặng thêm các bệnh eczema, viêm da cơ địa</li>
+                        </ul>
+                        
+                        <p><strong>🛡️ CÁCH BẢO VỆ DA:</strong></p>
+                        <ul class="waste-examples">
+                            <li>Rửa mặt ngay sau khi đi đường về</li>
+                            <li>Tẩy trang kỹ lưỡng vào cuối ngày</li>
+                            <li>Sử dụng kem chống nắng SPF 30+ hàng ngày</li>
+                            <li>Đeo khẩu trang vải và khẩu trang y tế khi ra đường</li>
+                            <li>Che chắn kỹ: mũ rộng vành, áo khoác chống nắng</li>
+                            <li>Uống đủ 2 lít nước mỗi ngày</li>
+                            <li>Ăn nhiều rau xanh, trái cây giàu vitamin E, C</li>
+                            <li>Hạn chế trang điểm dày khi đi ra đường</li>
+                        </ul>
+                    </div>
+                `;
+            }
+            
+            // ========== 13. SỨC KHỎE MẮT ==========
+            else if (msg.includes('mắt') || msg.includes('đỏ mắt') || msg.includes('cộm mắt') || msg.includes('khô mắt') || msg.includes('viêm kết mạc')) {
+                return `
+                    <strong>👁️ ẢNH HƯỞNG CỦA Ô NHIỄM ĐẾN MẮT</strong>
+                    <br><br>
+                    <div class="health-card">
+                        <p><strong>⚠️ CÁC VẤN ĐỀ THƯỜNG GẶP:</strong></p>
+                        <ul class="waste-examples">
+                            <li><strong>Viêm kết mạc (đau mắt đỏ):</strong> Đỏ mắt, chảy nước mắt, cộm xốn, nhiều ghèn</li>
+                            <li><strong>Dị ứng mắt:</strong> Ngứa dữ dội, sưng mi mắt, chảy nước mắt</li>
+                            <li><strong>Khô mắt:</strong> Cảm giác cát trong mắt, mờ tạm thời, mỏi mắt</li>
+                            <li><strong>Mỏi mắt:</strong> Do ô nhiễm kết hợp với học tập căng thẳng</li>
+                        </ul>
+                        
+                        <p><strong>🛡️ CÁCH BẢO VỆ MẮT:</strong></p>
+                        <ul class="waste-examples">
+                            <li>Đeo kính râm hoặc kính bảo hộ khi ra đường</li>
+                            <li>Không dụi mắt khi tay bẩn</li>
+                            <li>Nhỏ mắt bằng nước muối sinh lý 0.9%</li>
+                            <li>Chườm mát khi mắt bị kích ứng</li>
+                            <li>Bổ sung vitamin A từ cà rốt, bí đỏ, đu đủ, gấc</li>
+<li>Cho mắt nghỉ ngơi sau mỗi 45 phút học tập</li>
+                            <li>Đeo kính áp tròng đúng cách, vệ sinh kính thường xuyên</li>
+                        </ul>
+                        
+                        <p><strong>🚨 KHI NÀO CẦN ĐI KHÁM?</strong></p>
+                        <ul class="waste-examples">
+                            <li>Đau mắt dữ dội, sợ ánh sáng</li>
+                            <li>Nhìn mờ đột ngột</li>
+                            <li>Có mủ, ghèn xanh vàng nhiều</li>
+                            <li>Mắt sưng đỏ kéo dài trên 3 ngày</li>
+                        </ul>
+                    </div>
+                `;
+            }
+            
+            // ========== 14. SỨC KHỎE TIM MẠCH ==========
+            else if (msg.includes('tim') || msg.includes('huyết áp') || msg.includes('đột quỵ') || msg.includes('nhồi máu cơ tim')) {
+                return `
+                    <strong>❤️ ẢNH HƯỞNG CỦA Ô NHIỄM ĐẾN TIM MẠCH</strong>
+                    <br><br>
+                    <div class="health-card">
+                        <p><strong>📊 NGHIÊN CỨU CHO THẤY:</strong></p>
+                        <ul class="waste-examples">
+                            <li>Ô nhiễm không khí làm tăng 15-20% nguy cơ mắc bệnh tim mạch</li>
+                            <li>Người trẻ tuổi cũng chịu ảnh hưởng nặng nề không kém người già</li>
+                            <li>Sống trong khu vực ô nhiễm cao tăng 30% nguy cơ đột quỵ</li>
+                        </ul>
+                        
+                        <p><strong>⚠️ TÁC ĐỘNG CỤ THỂ:</strong></p>
+                        <ul class="waste-examples">
+                            <li>Bụi mịn PM2.5 xuyên qua phế nang vào máu</li>
+                            <li>Gây viêm thành mạch, xơ vữa động mạch</li>
+                            <li>Tăng huyết áp do stress oxy hóa</li>
+                            <li>Rối loạn nhịp tim</li>
+                            <li>Tăng nguy cơ hình thành cục máu đông</li>
+                            <li>Làm nặng thêm bệnh suy tim</li>
+                        </ul>
+                        
+                        <p><strong>🛡️ BIỆN PHÁP PHÒNG NGỪA:</strong></p>
+                        <ul class="waste-examples">
+                            <li>Kiểm tra chỉ số AQI trên điện thoại trước khi ra ngoài</li>
+                            <li>Hạn chế vận động gắng sức ngoài trời khi ô nhiễm</li>
+                            <li>Không hút thuốc, tránh xa khói thuốc</li>
+                            <li>Ăn nhạt, giảm muối</li>
+                            <li>Tập thể dục đều đặn trong nhà</li>
+                            <li>Kiểm tra huyết áp định kỳ</li>
+<li>Khám sức khỏe tổng quát mỗi năm</li>
+                        </ul>
+                    </div>
+                `;
+            }
+            
+            // ========== 15. KHẨU TRANG ==========
+            else if (msg.includes('khẩu trang') || msg.includes('mask') || msg.includes('n95') || msg.includes('kn95')) {
+                return `
+                    <strong>😷 HƯỚNG DẪN CHỌN KHẨU TRANG PHÒNG Ô NHIỄM</strong>
+                    <br><br>
+                    <div class="health-card">
+                        <p><strong>🏆 KHẨU TRANG N95/KN95:</strong></p>
+                        <ul class="waste-examples">
+                            <li>Lọc được 95% bụi mịn PM2.5</li>
+                            <li>Phù hợp khi chỉ số AQI > 100 (màu cam, đỏ, tím)</li>
+                            <li>Có van thở hoặc không van</li>
+                            <li>Thời gian sử dụng: 8-12 giờ (có thể dùng 3-5 ngày nếu bảo quản tốt)</li>
+                            <li>Giá tham khảo: 25.000 - 50.000 đồng</li>
+                            <li><strong>Mua ở đâu:</strong> Nhà thuốc, siêu thị, cửa hàng dụng cụ y tế</li>
+                        </ul>
+                        
+                        <p><strong>🥈 KHẨU TRANG Y TẾ 4 LỚP:</strong></p>
+                        <ul class="waste-examples">
+                            <li>Lọc được 70-80% bụi mịn</li>
+                            <li>Phù hợp khi AQI 50-100 (màu vàng)</li>
+                            <li>Nên thay sau 4-6 giờ sử dụng</li>
+                            <li>Giá: 2.000 - 5.000 đồng</li>
+                        </ul>
+                        
+                        <p><strong>🥉 KHẨU TRANG VẢI:</strong></p>
+                            <li>Chỉ phù hợp khi AQI < 50 (màu xanh)</li>
+                            <li>Giặt sạch hàng ngày, phơi nắng</li>
+                            <li>Có thể kết hợp với khẩu trang y tế bên trong để tăng hiệu quả</li>
+                        </ul>
+                        
+                        <p><strong>✅ CÁCH ĐEO KHẨU TRANG ĐÚNG:</strong></p>
+                        <ul class="waste-examples">
+                            <li>Rửa tay sạch trước khi đeo</li>
+                            <li>Che kín mũi, miệng và cằm</li>
+                            <li>Bóp chặt thanh nẹp mũi theo sống mũi</li>
+                            <li>Không chạm tay vào mặt ngoài khẩu trang khi đang đeo</li>
+                            <li>Thay khẩu trang ngay khi bị ẩm, ướt</li>
+                            <li>Tháo khẩu trang bằng dây đeo, không chạm vào mặt ngoài</li>
+                        </ul>
+                    </div>
+                `;
+            }
+// ========== 16. DINH DƯỠNG TĂNG ĐỀ KHÁNG ==========
+            else if (msg.includes('dinh dưỡng') || msg.includes('ăn uống') || msg.includes('thực phẩm') || msg.includes('đề kháng') || msg.includes('tăng sức đề kháng')) {
+                return `
+                    <strong>🥗 DINH DƯỠNG TĂNG CƯỜNG ĐỀ KHÁNG</strong>
+                    <br><br>
+                    <div class="health-card">
+                        <p><strong>🍊 VITAMIN C - CHỐNG OXY HÓA:</strong></p>
+                        <ul class="waste-examples">
+                            <li>Cam, quýt, bưởi, chanh</li>
+                            <li>Ổi, kiwi, dâu tây, đu đủ</li>
+                            <li>Rau ngót, rau cải, súp lơ, cà chua</li>
+                            <li><em>Tác dụng:</em> Tăng sản xuất tế bào bạch cầu, chống lại tác hại của gốc tự do</li>
+                        </ul>
+                        
+                        <p><strong>🥕 VITAMIN A & BETA-CAROTENE - BẢO VỆ NIÊM MẠC:</strong></p>
+                        <ul class="waste-examples">
+                            <li>Cà rốt, bí đỏ, khoai lang</li>
+                            <li>Đu đủ, xoài, gấc, dưa hấu</li>
+                            <li>Rau cải xanh, rau dền, rau muống</li>
+                            <li><em>Tác dụng:</em> Bảo vệ niêm mạc đường hô hấp, tăng cường thị lực</li>
+                        </ul>
+                        
+                        <p><strong>🐟 OMEGA-3 - CHỐNG VIÊM:</strong></p>
+                        <ul class="waste-examples">
+                            <li>Cá hồi, cá thu, cá trích, cá basa</li>
+                            <li>Hạt chia, hạt lanh, quả óc chó</li>
+                            <li>Đậu nành, dầu oliu</li>
+                            <li><em>Tác dụng:</em> Giảm viêm, tốt cho tim mạch, phổi</li>
+                        </ul>
+                        
+                        <p><strong>💧 NƯỚC - THANH LỌC CƠ THỂ:</strong></p>
+                        <ul class="waste-examples">
+                            <li>Uống 2-2.5 lít nước mỗi ngày</li>
+                            <li>Uống nước ấm, hạn chế nước đá</li>
+                            <li>Có thể uống trà xanh, nước ép trái cây</li>
+                        </ul>
+                        
+                        <p><strong>⚠️ THỰC PHẨM CẦN HẠN CHẾ:</strong></p>
+                        <ul class="waste-examples">
+                            <li>Đồ chiên rán, nhiều dầu mỡ</li>
+                            <li>Thức ăn nhanh, đồ hộp</li>
+                            <li>Nước ngọt có ga, bia rượu</li>
+                            <li>Thức ăn quá mặn, quá ngọt</li>
+                        </ul>
+                    </div>
+                `;
+}
+            
+            // ========== 17. TẬP THỂ DỤC KHI Ô NHIỄM ==========
+            else if (msg.includes('tập thể dục') || msg.includes('vận động') || msg.includes('thể thao') || msg.includes('chạy bộ') || msg.includes('đi bộ')) {
+                const aqiText = document.getElementById('aqiText').innerHTML;
+                
+                return `
+                    <strong>🏃 HƯỚNG DẪN TẬP THỂ DỤC KHI Ô NHIỄM</strong>
+                    <br><br>
+                    <div class="health-card">
+                        <p><strong>📊 CHẤT LƯỢNG KHÔNG KHÍ HIỆN TẠI: ${aqiText}</strong></p>
+                        
+                        ${aqiText.includes('Tốt') ? `
+                            <p><strong style="color: #10B981;">✅ AN TOÀN - CÓ THỂ TẬP NGOÀI TRỜI</strong></p>
+                            <ul class="waste-examples">
+                                <li>Có thể chạy bộ, đi bộ, đạp xe</li>
+                                <li>Nên tập vào sáng sớm (5h-6h30) hoặc chiều tối (17h-18h30)</li>
+                                <li>Tránh tập giữa trưa nắng gắt</li>
+                            </ul>
+                        ` : aqiText.includes('Trung bình') ? `
+                            <p><strong style="color: #F59E0B;">⚠️ THẬN TRỌNG - HẠN CHẾ GẮNG SỨC</strong></p>
+                            <ul class="waste-examples">
+                                <li>Có thể đi bộ nhẹ nhàng, không nên chạy nhanh</li>
+                                <li>Nên đeo khẩu trang khi tập</li>
+                                <li>Thời gian tập không quá 45 phút</li>
+                                <li>Nhóm nhạy cảm (hen suyễn, dị ứng) nên tập trong nhà</li>
+                            </ul>
+                        ` : `
+                            <p><strong style="color: #EF4444;">❌ KHÔNG AN TOÀN - TẬP TRONG NHÀ</strong></p>
+                            <ul class="waste-examples">
+                                <li>Không nên tập thể dục ngoài trời</li>
+                                <li>Chuyển sang các bài tập trong nhà</li>
+                            </ul>
+                        `}
+                        
+                        <p><strong>🏠 BÀI TẬP TRONG NHÀ:</strong></p>
+                        <ul class="waste-examples">
+                            <li><strong>Yoga:</strong> Các tư thế hít thở sâu, thư giãn</li>
+                            <li><strong>Thể dục nhịp điệu:</strong> Nhảy dây, chạy tại chỗ</li>
+                            <li><strong>Bài tập sức mạnh:</strong> Chống đẩy, gập bụng, squat, plank</li>
+                            <li><strong>Tập với ghế:</strong> Leo ghế, chống đẩy với ghế</li>
+<li><strong>Đi bộ trên máy:</strong> Nếu có máy tập tại nhà</li>
+                        </ul>
+                        
+                        <p><strong>⏰ THỜI ĐIỂM TẬP TỐT NHẤT TRONG NGÀY:</strong></p>
+                        <ul class="waste-examples">
+                            <li>Sáng sớm: 5h30 - 6h30 (AQI thường thấp nhất)</li>
+                            <li>Chiều tối: 18h - 19h (sau giờ cao điểm)</li>
+                            <li>Tránh giờ cao điểm: 7h-9h và 17h-19h</li>
+                        </ul>
+                    </div>
+                `;
+            }
+            
+            // ========== 18. CÂY LỌC KHÔNG KHÍ ==========
+            else if (msg.includes('cây lọc không khí') || msg.includes('cây xanh') || msg.includes('trồng cây') || msg.includes('cây trong nhà')) {
+                return `
+                    <strong>🌿 CÂY XANH LỌC KHÔNG KHÍ TRONG NHÀ</strong>
+                    <br><br>
+                    <div class="info-card">
+                        <p><strong>🏆 TOP 5 CÂY LỌC KHÔNG KHÍ TỐT NHẤT:</strong></p>
+                        
+                        <p><strong>1. Cây Lưỡi hổ (Snake Plant):</strong></p>
+                        <ul class="waste-examples">
+                            <li>Hấp thụ CO2, formaldehyde, benzene</li>
+                            <li>Thải oxy vào ban đêm - rất tốt để trong phòng ngủ</li>
+                            <li>Dễ chăm sóc, chịu hạn tốt</li>
+                        </ul>
+                        
+                        <p><strong>2. Cây Lan ý (Peace Lily):</strong></p>
+                        <ul class="waste-examples">
+                            <li>Lọc benzene, formaldehyde, trichloroethylene</li>
+                            <li>Hấp thụ bụi mịn hiệu quả</li>
+                            <li>Có hoa trắng đẹp</li>
+                        </ul>
+                        
+                        <p><strong>3. Cây Kim ngân (Money Tree):</strong></p>
+                        <ul class="waste-examples">
+                            <li>Hấp thụ khí độc, bụi mịn</li>
+                            <li>Mang ý nghĩa may mắn, tài lộc</li>
+                        </ul>
+                        
+                        <p><strong>4. Cây Trầu bà (Pothos):</strong></p>
+                        <ul class="waste-examples">
+                            <li>Lọc formaldehyde, xylene, benzene</li>
+                            <li>Dây leo đẹp, dễ trồng thủy canh</li>
+                        </ul>
+                        
+                        <p><strong>5. Cây Nha đam (Aloe Vera):</strong></p>
+                        <ul class="waste-examples">
+                            <li>Hấp thụ formaldehyde, benzene</li>
+<li>Gel nha đam dùng làm đẹp, chữa bỏng</li>
+                        </ul>
+                        
+                        <p><strong>📌 CÁCH CHĂM SÓC CÂY TRONG LỚP HỌC:</strong></p>
+                        <ul class="waste-examples">
+                            <li>Tưới nước 2-3 lần/tuần, không để úng</li>
+                            <li>Đặt cây ở nơi có ánh sáng tự nhiên</li>
+                            <li>Lau lá thường xuyên để cây quang hợp tốt</li>
+                            <li>Phân bón: bón 1 lần/tháng</li>
+                        </ul>
+                    </div>
+                `;
+            }
+            
+            // ========== 19. MẸO TIẾT KIỆM ĐIỆN ==========
+            else if (msg.includes('tiết kiệm điện') || msg.includes('tốn điện') || msg.includes('hóa đơn điện')) {
+                return `
+                    <strong>⚡ 10 CÁCH TIẾT KIỆM ĐIỆN TẠI TRƯỜNG HỌC</strong>
+                    <br><br>
+                    <div class="info-card">
+                        <ul class="waste-examples">
+                            <li><strong>1. Tắt đèn khi ra khỏi lớp:</strong> Dù chỉ 5 phút cũng nên tắt</li>
+                            <li><strong>2. Tận dụng ánh sáng tự nhiên:</strong> Mở cửa sổ, kéo rèm</li>
+                            <li><strong>3. Tắt quạt, máy lạnh, máy chiếu khi không sử dụng</strong></li>
+                            <li><strong>4. Rút phích cắm các thiết bị sạc khi không dùng</strong> (vẫn tốn điện ngay cả khi không sạc)</li>
+                            <li><strong>5. Vệ sinh bóng đèn, quạt thường xuyên:</strong> Bám bụi làm giảm hiệu suất 30%</li>
+                            <li><strong>6. Sử dụng quạt thay máy lạnh:</strong> Quạt tốn 50-100W, máy lạnh tốn 1000-2000W</li>
+                            <li><strong>7. Để máy lạnh ở 26°C:</strong> Mỗi độ giảm tăng 5% điện năng</li>
+                            <li><strong>8. Sử dụng đèn LED:</strong> Tiết kiệm 80% điện so với đèn sợi đốt</li>
+                            <li><strong>9. Không mở tủ lạnh quá lâu:</strong> Đóng mở nhiều làm hao điện</li>
+                            <li><strong>10. Nhắc nhở bạn bè cùng tiết kiệm điện</strong></li>
+                        </ul>
+                        <p><em>💡 Một bóng đèn để quên 8 tiếng/ngày lãng phí 60kWh/năm - đủ sạc 5000 điện thoại!</em></p>
+                    </div>
+                `;
+            }
+            
+            // ========== 20. MẸO TIẾT KIỆM NƯỚC ==========
+            else if (msg.includes('tiết kiệm nước') || msg.includes('tốn nước') || msg.includes('hóa đơn nước')) {
+                return `
+                    <strong>💧 10 CÁCH TIẾT KIỆM NƯỚC TẠI TRƯỜNG HỌC</strong>
+                    <br><br>
+<div class="info-card">
+                        <ul class="waste-examples">
+                            <li><strong>1. Khóa vòi nước khi không sử dụng:</strong> Khi đánh răng, rửa tay</li>
+                            <li><strong>2. Báo ngay cho thầy cô nếu thấy vòi nước bị rò rỉ</strong></li>
+                            <li><strong>3. Sử dụng ca thay vì vòi nước chảy liên tục</strong> khi đánh răng</li>
+                            <li><strong>4. Thu gom nước mưa</strong> để tưới cây trong vườn trường</li>
+                            <li><strong>5. Tái sử dụng nước rửa rau, vo gạo</strong> để tưới cây</li>
+                            <li><strong>6. Không xả nước bừa bãi, chơi đùa với nước</strong></li>
+                            <li><strong>7. Sử dụng vòi sen thay bồn tắm:</strong> Tiết kiệm 70% nước</li>
+                            <li><strong>8. Đặt chai nhựa đầy nước vào ngăn chứa của bồn cầu</strong> để giảm lượng nước xả</li>
+                            <li><strong>9. Chỉ chạy máy giặt khi đủ tải</strong></li>
+                            <li><strong>10. Sử dụng bình phun vòi thay vì vòi xịt</strong></li>
+                        </ul>
+                        <p><em>💡 Mỗi phút vòi nước chảy lãng phí 6 lít nước - tương đương 12 chai nước suối!</em></p>
+                    </div>
+                `;
+            }
+            
+            // ========== 21. CHÀO HỎI ==========
+            else if (msg.includes('chào') || msg.includes('hello') || msg.includes('hi') || msg.includes('hey') || msg.includes('bạn ơi')) {
+                return `
+                    <strong>👋 CHÀO BẠN!</strong>
+                    <br><br>
+                    Rất vui được gặp bạn. Mình là EcoBuddy, trợ lý AI về môi trường và sức khỏe.
+                    <br><br>
+                    <strong>Bạn có thể hỏi mình bất cứ điều gì, ví dụ:</strong>
+                    <br><br>
+                    <div class="quick-actions">
+                        <button class="quick-action-btn" onclick="quickAction('chai-nhua')">"Chai nhựa bỏ thùng nào?"</button>
+                        <button class="quick-action-btn" onclick="quickAction('pin')">"Pin cũ để đâu?"</button>
+                        <button class="quick-action-btn" onclick="quickAction('khong-khi')">"Hôm nay ô nhiễm không?"</button>
+                        <button class="quick-action-btn" onclick="quickAction('ho-hap')">"Ô nhiễm gây bệnh gì?"</button>
+                        <button class="quick-action-btn" onclick="quickAction('khau-trang')">"Nên đeo khẩu trang nào?"</button>
+                        <button class="quick-action-btn" onclick="quickAction('tiet-kiem-dien')">"Cách tiết kiệm điện"</button>
+                    </div>
+<br>
+                    <strong>⚠️ CỨ HỎI - MÌNH TRẢ LỜI 100%!</strong>
+                `;
+            }
+            
+            // ========== 22. CẢM ƠN ==========
+            else if (msg.includes('cảm ơn') || msg.includes('thanks') || msg.includes('thank')) {
+                return `
+                    <strong>🙏 CẢM ƠN BẠN!</strong>
+                    <br><br>
+                    Rất vui vì đã giúp được bạn. Chỉ cần bạn quan tâm đến môi trường và sức khỏe, mình luôn sẵn sàng trả lời mọi câu hỏi.
+                    <br><br>
+                    <strong>Bạn đã tích lũy được ${userData.points} điểm xanh!</strong> Tiếp tục đặt câu hỏi để nâng cao kiến thức nhé! 🌟
+                    <br><br>
+                    Còn điều gì bạn muốn hỏi nữa không?
+                `;
+            }
+            
+            // ========== 23. THÀNH TÍCH ==========
+            else if (msg.includes('điểm') || msg.includes('thành tích') || msg.includes('tiến độ') || msg.includes('xếp hạng')) {
+                return `
+                    <strong>🏆 THÀNH TÍCH CỦA BẠN</strong>
+                    <br><br>
+                    <div class="info-card">
+                        <p><strong>🌟 Điểm xanh:</strong> ${userData.points}</p>
+                        <p><strong>✅ Phân loại rác đúng:</strong> ${userData.correctClassifications} lần</p>
+                        <p><strong>❓ Câu hỏi đã hỏi:</strong> ${userData.questionsAsked} câu</p>
+                        <p><strong>📅 Ngày tham gia:</strong> ${userData.daysActive} ngày</p>
+                        <p><strong>📈 Mức độ hiểu biết:</strong> ${Math.round(userData.knowledgeLevel)}%</p>
+                        <p><strong>🎯 Tiến độ học tập:</strong> ${Math.round(userData.learningProgress)}%</p>
+                    </div>
+                    <p>Hãy tiếp tục đặt câu hỏi để cải thiện điểm số nhé!</p>
+                `;
+            }
+            
+            // ========== 24. KHÔNG HIỂU CÂU HỎI ==========
+            else {
+                return `
+                    <strong>❓ CÂU HỎI CỦA BẠN: "${escapeHtml(question)}"</strong>
+                    <br><br>
+                    Cảm ơn bạn đã hỏi! Hiện tại mình chưa có đủ dữ liệu để trả lời câu hỏi này một cách chính xác nhất.
+                    <br><br>
+                    <strong>Bạn có thể thử hỏi mình những chủ đề sau:</strong>
+                    <br><br>
+                    <div class="quick-actions">
+                        <button class="quick-action-btn" onclick="quickAction('chai-nhua')">🗑️ Phân loại chai nhựa</button>
+                        <button class="quick-action-btn" onclick="quickAction('pin')">🔋 Phân loại pin</button>
+<button class="quick-action-btn" onclick="quickAction('giay')">📄 Phân loại giấy</button>
+                        <button class="quick-action-btn" onclick="quickAction('khong-khi')">🌍 Chất lượng không khí</button>
+                        <button class="quick-action-btn" onclick="quickAction('ho-hap')">🫁 Bệnh hô hấp</button>
+                        <button class="quick-action-btn" onclick="quickAction('khau-trang')">😷 Khẩu trang</button>
+                        <button class="quick-action-btn" onclick="quickAction('tiet-kiem-dien')">⚡ Tiết kiệm điện</button>
+                        <button class="quick-action-btn" onclick="quickAction('tiet-kiem-nuoc')">💧 Tiết kiệm nước</button>
+                    </div>
+                    <br>
+                    <strong>⚠️ HOẶC BẠN CÓ THỂ HỎI LẠI THEO CÁCH KHÁC!</strong>
+                `;
+            }
+        }
+
+        // ==================== QUICK ACTIONS ====================
+        function quickAction(action) {
+            const input = document.getElementById('userInput');
+            
+            const actionMap = {
+                'chai-nhua': 'Chai nhựa bỏ thùng nào?',
+                'pin': 'Pin cũ để ở đâu?',
+                'giay': 'Phân loại giấy, sách báo cũ',
+                'lon': 'Vỏ lon bia, nước ngọt bỏ đâu?',
+                'thuy-tinh': 'Chai thủy tinh bỏ thùng nào?',
+                'bong-den': 'Bóng đèn hỏng bỏ đâu?',
+                'dien-tu': 'Điện thoại, máy tính cũ bỏ thế nào?',
+                'huu-co': 'Rác hữu cơ là gì?',
+                'khong-khi': 'Chất lượng không khí hôm nay thế nào?',
+                'o-nhiem': 'Ô nhiễm không khí ảnh hưởng sức khỏe ra sao?',
+                'ho-hap': 'Bệnh hô hấp do ô nhiễm',
+                'da': 'Bảo vệ da khi ô nhiễm',
+                'mat': 'Bảo vệ mắt khi ô nhiễm',
+                'tim': 'Ô nhiễm và bệnh tim mạch',
+                'khau-trang': 'Nên đeo khẩu trang nào để chống ô nhiễm?',
+                'dinh-duong': 'Ăn gì để tăng đề kháng?',
+                'tap-the-duc': 'Tập thể dục khi ô nhiễm thế nào?',
+                'cay-loc-kk': 'Cây gì lọc không khí tốt?',
+                'tiet-kiem-dien': 'Cách tiết kiệm điện trong trường học',
+                'tiet-kiem-nuoc': 'Cách tiết kiệm nước',
+                'song-xanh': 'Mẹo sống xanh tại trường'
+            };
+            
+            input.value = actionMap[action] || action;
+            sendMessage();
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function scrollToBottom() {
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+    </script>
+</body>
+</html>
